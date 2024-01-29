@@ -1,6 +1,6 @@
 import axios from "axios";
 
-type todoType = [
+export type todosType = [
   {
     id: number;
     userId: number;
@@ -15,7 +15,7 @@ type userType = [
   }
 ];
 
-export const fetchTodos = async (): Promise<todoType> => {
+export const fetchTodos = async (): Promise<todosType> => {
   const res = await axios
     .get("http://localhost:3000/todos")
     .then((res) => res.data);
@@ -41,14 +41,14 @@ export const postTodos = async (todoObj: {
 };
 
 export const searchTodos = async (searchObj: {
-  todos: todoType;
+  todos: todosType;
   searchInput: string;
-}): Promise<todoType> => {
-  const searchedTodos = new Promise<todoType>((resolve) => {
+}): Promise<todosType> => {
+  const searchedTodos = new Promise<todosType>((resolve) => {
     resolve(
       searchObj.todos.filter((todo) =>
         todo.text.includes(searchObj.searchInput)
-      ) as todoType
+      ) as todosType
     );
   });
   return searchedTodos;

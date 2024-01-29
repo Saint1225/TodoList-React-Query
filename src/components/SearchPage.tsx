@@ -1,10 +1,19 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { fetchTodos, fetchUsers, postTodos, searchTodos } from "../utility/api";
-import { useRef } from "react";
+import {
+  fetchTodos,
+  fetchUsers,
+  postTodos,
+  // searchTodos,
+} from "../utility/api";
+import { useRef, useState } from "react";
+
+type todo = { id: number; userId: number; text: string };
 
 const SearchPage = () => {
   const addInputRef = useRef<HTMLInputElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
+
+  const [searchedTodos, setSearchedTodos] = useState<todo[]>([]);
 
   const queryClient = useQueryClient();
 
@@ -28,16 +37,16 @@ const SearchPage = () => {
     },
   });
 
-  const searchMutation = useMutation({
-    mutationFn: searchTodos,
-    onSuccess: (data) => {
-      queryClient.setQueryData(["todos"], data);
-      // console.log(context);
-    },
-    // onMutate: () => {
-    //   return { test: "try try" };
-    // },
-  });
+  // const searchMutation = useMutation({
+  //   mutationFn: searchTodos,
+  //   onSuccess: (data) => {
+  //     queryClient.setQueryData(["todos"], data);
+  //     // console.log(context);
+  //   },
+  //   // onMutate: () => {
+  //   //   return { test: "try try" };
+  //   // },
+  // });
 
   // if(todosQuery.fetchStatus ==='fetching');
 
@@ -53,16 +62,26 @@ const SearchPage = () => {
         text: addInputRef.current!.value,
       });
     }
+    queryClient.invalidateQueries({ queryKey: ["todos"] });
   };
 
   const searchHandler = () => {
     if (searchInputRef.current?.value) {
-      searchMutation.mutate({
-        todos: todosQuery.data,
-        searchInput: searchInputRef.current?.value,
-      });
-    } else queryClient.invalidateQueries({ queryKey: ["todos"] });
+      console.log("if");
+      setSearchedTodos(
+        todosQuery.data.filter((todo) =>
+          todo.text.includes(searchInputRef.current!.value)
+        )
+      );
+
+      // searchMutation.mutate({
+      //   todos: todosQuery.data,
+      //   searchInput: searchInputRef.current?.value,
+      // });
+    } else setSearchedTodos([]);
   };
+
+  console.log(searchedTodos);
 
   return (
     <div className="relative min-h-screen justify-center text-lg overflow-hidden bg-gray-900 p-6 sm:py-12 text-gray-300">
@@ -88,16 +107,27 @@ const SearchPage = () => {
       <br />
       {todosQuery.isLoading && <h3>Loading...</h3>}
       <ul>
-        {todosQuery.data?.map((todo) => (
-          <li key={todo.id}>
-            {todo.text} -{" "}
-            {usersQuery.isLoading
-              ? "Loading"
-              : usersQuery.data?.find(
-                  (user: { id: number }) => user.id === todo.userId
-                )?.name}
-          </li>
-        ))}
+        {searchedTodos.length === 0
+          ? todosQuery.data?.map((todo) => (
+              <li key={todo.id}>
+                {todo.text} -{" "}
+                {usersQuery.isLoading
+                  ? "Loading"
+                  : usersQuery.data?.find(
+                      (user: { id: number }) => user.id === todo.userId
+                    )?.name}
+              </li>
+            ))
+          : (searchedTodos as todo[]).map((todo: todo) => (
+              <li key={todo.id}>
+                {todo.text} -{" "}
+                {usersQuery.isLoading
+                  ? "Loading"
+                  : usersQuery.data?.find(
+                      (user: { id: number }) => user.id === todo.userId
+                    )?.name}
+              </li>
+            ))}
       </ul>
       {todosQuery.isError && <h3>Fetch data error</h3>}
     </div>
