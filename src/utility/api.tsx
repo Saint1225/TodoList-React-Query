@@ -53,3 +53,22 @@ export const searchTodos = async (searchObj: {
   });
   return searchedTodos;
 };
+
+export const fetchPaginatedTodos = async (page: number) => {
+  axios
+    .get("http://localhost:3000/todos", {
+      params: {
+        _page: page,
+        _sort: "text",
+        _limit: 2,
+      },
+    })
+    .then((res) => {
+      const hasNextPage = page * 2 <= parseInt(res.headers["x-total-count"]);
+      return {
+        nextPage: hasNextPage ? page + 1 : undefined,
+        previousPage: page > 1 ? page - 1 : undefined,
+        todos: res.data,
+      };
+    });
+};

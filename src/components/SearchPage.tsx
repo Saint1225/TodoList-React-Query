@@ -67,7 +67,6 @@ const SearchPage = () => {
 
   const searchHandler = () => {
     if (searchInputRef.current?.value) {
-      console.log("if");
       setSearchedTodos(
         todosQuery.data.filter((todo) =>
           todo.text.includes(searchInputRef.current!.value)
@@ -80,8 +79,6 @@ const SearchPage = () => {
       // });
     } else setSearchedTodos([]);
   };
-
-  console.log(searchedTodos);
 
   return (
     <div className="relative min-h-screen justify-center text-lg overflow-hidden bg-gray-900 p-6 sm:py-12 text-gray-300">
