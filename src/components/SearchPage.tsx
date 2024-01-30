@@ -6,6 +6,7 @@ import {
   // searchTodos,
 } from "../utility/api";
 import { useRef, useState } from "react";
+import { Link } from "react-router-dom";
 
 type todo = { id: number; userId: number; text: string };
 
@@ -82,6 +83,11 @@ const SearchPage = () => {
 
   return (
     <div className="relative min-h-screen justify-center text-lg overflow-hidden bg-gray-900 p-6 sm:py-12 text-gray-300">
+      <button className="border-gray-300 rounded-md border-2 px-1">
+        <Link to="pagination">Go to Pagination</Link>
+      </button>
+      <br />
+      <br />
       <p>Search text: </p>
       <input ref={searchInputRef} className="w-1/5 mr-2" />
       <button

@@ -15,6 +15,12 @@ type userType = [
   }
 ];
 
+type paginatedType = {
+  nextPage: number | undefined;
+  previousPage: number | undefined;
+  todos: todosType;
+};
+
 export const fetchTodos = async (): Promise<todosType> => {
   const res = await axios
     .get("http://localhost:3000/todos")
@@ -54,8 +60,10 @@ export const searchTodos = async (searchObj: {
   return searchedTodos;
 };
 
-export const fetchPaginatedTodos = async (page: number) => {
-  axios
+export const fetchPaginatedTodos = async (
+  page: number
+): Promise<paginatedType> => {
+  const res = axios
     .get("http://localhost:3000/todos", {
       params: {
         _page: page,
@@ -64,11 +72,12 @@ export const fetchPaginatedTodos = async (page: number) => {
       },
     })
     .then((res) => {
-      const hasNextPage = page * 2 <= parseInt(res.headers["x-total-count"]);
+      const hasNextPage = page * 2 < parseInt(res.headers["x-total-count"]);
       return {
         nextPage: hasNextPage ? page + 1 : undefined,
         previousPage: page > 1 ? page - 1 : undefined,
         todos: res.data,
       };
     });
+  return res;
 };
