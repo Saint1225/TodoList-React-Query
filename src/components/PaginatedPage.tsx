@@ -36,7 +36,7 @@ const PaginatedPage = () => {
       <h1>Paginated Todos</h1>
       <ul>
         {data?.todos.map((todo: todo) => (
-          <li>{todo.text}</li>
+          <li key={todo.id}>{todo.text}</li>
         ))}
       </ul>
       {data?.previousPage && (

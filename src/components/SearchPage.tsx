@@ -83,9 +83,13 @@ const SearchPage = () => {
 
   return (
     <div className="relative min-h-screen justify-center text-lg overflow-hidden bg-gray-900 p-6 sm:py-12 text-gray-300">
-      <button className="border-gray-300 rounded-md border-2 px-1">
+      <button className="border-gray-300 rounded-md border-2 px-1 mr-4">
         <Link to="pagination">Go to Pagination</Link>
       </button>
+      <button className="border-gray-300 rounded-md border-2 px-1">
+        <Link to="infinite">Go to InfinitePage</Link>
+      </button>
+
       <br />
       <br />
       <p>Search text: </p>
