@@ -9,7 +9,7 @@ type todo = {
 };
 
 const InfinitePage = () => {
-  const { data, isFetchingNextPage, hasNextPage, fetchNextPage } =
+  const { data, isFetching, isFetchingNextPage, hasNextPage, fetchNextPage } =
     useInfiniteQuery({
       queryKey: ["todos", "infinite"],
       queryFn: ({ pageParam }) => fetchPaginatedTodos(pageParam),
@@ -40,7 +40,7 @@ const InfinitePage = () => {
           Load more
         </button>
       )}
-      <h1>{isFetchingNextPage ? "Loading" : ""}</h1>
+      <h1>{isFetching || isFetchingNextPage ? "Loading..." : ""}</h1>
     </div>
   );
 };

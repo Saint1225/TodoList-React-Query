@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
+  fetchPaginatedTodos,
   fetchTodos,
   fetchUsers,
   postTodos,
@@ -81,12 +82,23 @@ const SearchPage = () => {
     } else setSearchedTodos([]);
   };
 
+  const onHoverInfinitePage = () => {
+    queryClient.prefetchInfiniteQuery({
+      queryKey: ["todos", "infinite"],
+      queryFn: () => fetchPaginatedTodos(1),
+      initialPageParam: 1,
+    });
+  };
+
   return (
     <div className="relative min-h-screen justify-center text-lg overflow-hidden bg-gray-900 p-6 sm:py-12 text-gray-300">
       <button className="border-gray-300 rounded-md border-2 px-1 mr-4">
         <Link to="pagination">Go to Pagination</Link>
       </button>
-      <button className="border-gray-300 rounded-md border-2 px-1">
+      <button
+        onMouseEnter={onHoverInfinitePage}
+        className="border-gray-300 rounded-md border-2 px-1"
+      >
         <Link to="infinite">Go to InfinitePage</Link>
       </button>
 
