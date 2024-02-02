@@ -22,16 +22,26 @@ type paginatedType = {
 };
 
 export const fetchTodos = async (): Promise<todosType> => {
+  const controller = new AbortController();
+  const signal = controller.signal;
   const res = await axios
-    .get("http://localhost:3000/todos")
+    .get("http://localhost:3000/todos", { signal })
     .then((res) => res.data);
+  setTimeout(() => {
+    controller.abort();
+  }, 3000);
   return res;
 };
 
 export const fetchUsers = async (): Promise<userType> => {
+  const controller = new AbortController();
+  const signal = controller.signal;
   const res = await axios
-    .get("http://localhost:3000/users")
+    .get("http://localhost:3000/users", { signal })
     .then((res) => res.data);
+  setTimeout(() => {
+    controller.abort();
+  }, 3000);
   return res;
 };
 
@@ -40,9 +50,14 @@ export const postTodos = async (todoObj: {
   userId: number;
   text: string;
 }): Promise<object> => {
+  const controller = new AbortController();
+  const signal = controller.signal;
   const res = await axios
-    .post("http://localhost:3000/todos", todoObj)
+    .post("http://localhost:3000/todos", todoObj, { signal: signal })
     .then((res) => res.data);
+  setTimeout(() => {
+    controller.abort();
+  }, 3000);
   return res;
 };
 
@@ -63,6 +78,8 @@ export const searchTodos = async (searchObj: {
 export const fetchPaginatedTodos = async (
   page: number
 ): Promise<paginatedType> => {
+  const controller = new AbortController();
+  const signal = controller.signal;
   const res = axios
     .get("http://localhost:3000/todos", {
       params: {
@@ -70,6 +87,7 @@ export const fetchPaginatedTodos = async (
         _sort: "text",
         _limit: 2,
       },
+      signal: signal,
     })
     .then((res) => {
       const hasNextPage = page * 2 < parseInt(res.headers["x-total-count"]);
@@ -79,5 +97,8 @@ export const fetchPaginatedTodos = async (
         todos: res.data,
       };
     });
+  setTimeout(() => {
+    controller.abort();
+  }, 3000);
   return res;
 };

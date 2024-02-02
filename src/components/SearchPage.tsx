@@ -4,6 +4,7 @@ import {
   fetchTodos,
   fetchUsers,
   postTodos,
+  todosType,
   // searchTodos,
 } from "../utility/api";
 import { useRef, useState } from "react";
@@ -39,6 +40,7 @@ const SearchPage = () => {
     },
   });
 
+  // ** Not ideal to set cached "todos" for search, cause will need to fetch data again once search input is cleared ** //
   // const searchMutation = useMutation({
   //   mutationFn: searchTodos,
   //   onSuccess: (data) => {
@@ -57,14 +59,18 @@ const SearchPage = () => {
     return <h1>{JSON.stringify(todosQuery.error)}</h1>;
 
   const addHandler = () => {
+    const mutatedData = {
+      id: parseInt((Math.random() * 100).toFixed(2)),
+      userId: Math.floor(Math.random() * (6 - 1) + 1),
+      text: addInputRef.current!.value,
+    };
     if (addInputRef.current?.value.length !== 0) {
-      todosMutation.mutate({
-        id: parseInt((Math.random() * 100).toFixed(2)),
-        userId: Math.floor(Math.random() * (6 - 1) + 1),
-        text: addInputRef.current!.value,
-      });
+      todosMutation.mutate(mutatedData);
     }
-    queryClient.invalidateQueries({ queryKey: ["todos"] });
+    queryClient.setQueryData(["todos"], (oldData: todosType) => [
+      ...oldData,
+      mutatedData,
+    ]);
   };
 
   const searchHandler = () => {
